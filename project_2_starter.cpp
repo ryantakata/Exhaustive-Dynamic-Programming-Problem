@@ -3,20 +3,42 @@
 #include <vector>
 #include <fstream>
 
-// bool verifier(int instance, int candidate)
-// {
+bool verify(std::vector<std::pair<int,int> > candidates, int limit)
+{
+    int totalCost = 0;
+    for(int i = 0; i < candidates.size(); ++i)
+    {
+        totalCost += candidates[i].second;
+    }
+    if(totalCost <= limit)
+    {
+        return true;
+    }
+    return false;
+}
 
-// }
+int combined_cost(std::vector<std::pair<int, int> > candidates)
+{
+    int totalCost = 0;
+    for(int i = 0; i < candidates.size(); ++i)
+    {
+        totalCost += candidates[i].second;
+    }
+    return totalCost;
+}
 
-// int stock_combinations()
-// {
+int stock_maximization(std::vector<std::pair<int, int> > companyStcks, int limit)
+{
+    std::pair<int, int> best;
 
-// }
-
-// int stock_maximization(int cost)
-// {
-    
-// }
+    // Figure out how to generate all the possible combinations and find the best.
+    // Look at knapsack for reference
+    for(int i = 0; i < companyStcks.size(); ++i)
+    {
+        
+    }
+     
+}
 
 
 
@@ -54,11 +76,11 @@ int main()
             stocks.push_back(p1);
             ++i;
         }
+        // Print stock pairs
         for(int i = 0; i < stocks.size(); ++i)
         {
             std::cout << stocks[i].first << " " << stocks[i].second << "\n";
         }
-
         companies.clear();
     }
     return 0;
