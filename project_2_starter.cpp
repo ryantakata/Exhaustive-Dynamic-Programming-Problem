@@ -5,6 +5,8 @@
 
 bool verify(std::vector<std::pair<int,int> > candidates, int limit)
 {
+    // Verifies the candidate is valid by checking 
+    // the cost does not exceed the limit
     int totalCost = 0;
     for(int i = 0; i < candidates.size(); ++i)
     {
@@ -19,6 +21,7 @@ bool verify(std::vector<std::pair<int,int> > candidates, int limit)
 
 int combined_stocks(std::vector<std::pair<int, int> > candidates)
 {
+    // Combines the total stock number
     int totalStocks = 0;
     for(int i = 0; i < candidates.size(); ++i)
     {
@@ -56,7 +59,7 @@ std::vector<std::pair<int, int> > stock_maximization(std::vector<std::pair<int, 
 
     // Generate all the subsets
     generate_instances(companyStcks, subset, res, 0);
-    // best = res[0];
+    // Replace best variable with best subset
     for(int i = 0; i < res.size(); ++i)
     {
         if(verify(res[i], limit))
@@ -67,17 +70,75 @@ std::vector<std::pair<int, int> > stock_maximization(std::vector<std::pair<int, 
             }
         }
     }
-
     return best;
 }
 
-
+void printOutput(std::vector<std::pair<int, int> > res, std::vector<std::pair<int, int> > stocks,
+                 int totalCost, int totalStocks, int cost, std::ofstream& output)
+{
+    for(int i = 0; i < res.size(); ++i)
+    {
+        totalStocks += res[i].first;
+        totalCost += res[i].second;
+    }
+    std::cout << totalStocks << " # ";
+    output << totalStocks << " # ";
+    for(int i = 0; i < res.size(); ++i)
+    {
+        if(++i != res.size())
+        {
+            --i;
+            std::cout << res[i].first << "+";
+            output << res[i].first << "+";
+        }
+        else
+        {
+            --i;
+            std::cout << res[i].first;
+            output << res[i].first;
+        }
+    }
+    std::cout << " at index ";
+    output << " at index ";
+    for(int i = 0; i < res.size(); ++i)
+    {
+        for(int k = 0; k < stocks.size(); ++k)
+        {
+            if(res[i] == stocks[k])
+            {
+                std::cout << k << ", ";
+                output << k << ", ";
+            }
+        }
+    }
+    std::cout << "sum of the values at these indicies = ";
+    output << "sum of the values at these indicies = ";
+    for(int i = 0; i < res.size(); ++i)
+    {
+        if(++i != res.size())
+        {
+            --i;
+            std::cout << res[i].second << "+";
+            output << res[i].second << "+";
+        }
+        else
+        {
+            --i;
+            std::cout << res[i].second;
+            output << res[i].second;
+        }
+    }
+    std::cout << " <= " << cost;
+    output << " <= " << cost;
+    std::cout << std::endl;
+    output << std::endl;
+}
 
 int main()
 {   
     std::ifstream ipFile("input.txt");
     std::ofstream out("output.txt");
-    int arrSize, cost;
+    int arrSize, cost, totalStocks = 0, totalCost = 0;
     std::string stcks;
     std::vector<int> companies;
     std::vector<std::pair<int, int> > stocks, res;
@@ -100,6 +161,7 @@ int main()
                 }
             }
         }
+        
         // Put the stock and cost pairs into the stocks vector
         for(int i = 0; i < companies.size(); ++i)
         {
@@ -113,13 +175,7 @@ int main()
         // Gets the combination of companies with highest stock value possible
         res = stock_maximization(stocks, cost);
 
-        // Generate the correct sample output HERE
-
-        for(int i = 0; i < res.size(); ++i)
-        {
-            std::cout << "[" << res[i].first << ", " << res[i].second << "] ";
-        }
-        std::cout << std::endl;
+        printOutput(res, stocks, totalCost, totalStocks, cost, out);
 
         res.clear();
         stocks.clear();
