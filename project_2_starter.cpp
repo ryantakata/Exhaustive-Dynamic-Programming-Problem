@@ -5,10 +5,9 @@
 
 bool verify(std::vector<std::pair<int,int> > candidates, int limit)
 {
-    int totalCost = 0, totalStocks = 0;
+    int totalCost = 0;
     for(int i = 0; i < candidates.size(); ++i)
     {
-        totalStocks += candidates[i].first;
         totalCost += candidates[i].second;
     }
     if(totalCost <= limit)
@@ -78,10 +77,10 @@ int main()
 {   
     std::ifstream ipFile("input.txt");
     std::ofstream out("output.txt");
-    int arrSize, cost, index;
+    int arrSize, cost;
     std::string stcks;
     std::vector<int> companies;
-    std::vector<std::pair<int, int> > stocks, subset, res;
+    std::vector<std::pair<int, int> > stocks, res;
     
     while(ipFile >> arrSize >> stcks >> cost)
     {
