@@ -5,9 +5,10 @@
 
 bool verify(std::vector<std::pair<int,int> > candidates, int limit)
 {
-    int totalCost = 0;
+    int totalCost = 0, totalStocks = 0;
     for(int i = 0; i < candidates.size(); ++i)
     {
+        totalStocks += candidates[i].first;
         totalCost += candidates[i].second;
     }
     if(totalCost <= limit)
@@ -17,27 +18,58 @@ bool verify(std::vector<std::pair<int,int> > candidates, int limit)
     return false;
 }
 
-int combined_cost(std::vector<std::pair<int, int> > candidates)
+int combined_stocks(std::vector<std::pair<int, int> > candidates)
 {
-    int totalCost = 0;
+    int totalStocks = 0;
     for(int i = 0; i < candidates.size(); ++i)
     {
-        totalCost += candidates[i].second;
+        totalStocks += candidates[i].first;
     }
-    return totalCost;
+    return totalStocks;
 }
 
-int stock_maximization(std::vector<std::pair<int, int> > companyStcks, int limit)
+void generate_instances(std::vector<std::pair<int, int> > stockPrices, std::vector<std::pair<int, int> > subset, 
+                        std::vector<std::vector<std::pair<int, int> > >& res, int index)
 {
-    std::pair<int, int> best;
-
-    // Figure out how to generate all the possible combinations and find the best.
-    // Look at knapsack for reference
-    for(int i = 0; i < companyStcks.size(); ++i)
+    // Base Case: Adds subset into resolution vector when end of vector is reached
+    if (index == stockPrices.size())
     {
-        
+        for(auto i : subset)
+        {
+            res.push_back(subset);
+        }
+        return;
     }
-     
+
+    // Includes current element in subset
+    subset.push_back(stockPrices[index]);
+    generate_instances(stockPrices, subset, res, index + 1);
+
+    // Excludes current element from subset
+    subset.pop_back();
+    generate_instances(stockPrices, subset, res, index + 1);
+}
+
+std::vector<std::pair<int, int> > stock_maximization(std::vector<std::pair<int, int> > companyStcks, int limit)
+{
+    std::vector<std::vector<std::pair<int, int> > > res;
+    std::vector<std::pair<int, int> > subset, best;
+
+    // Generate all the subsets
+    generate_instances(companyStcks, subset, res, 0);
+    // best = res[0];
+    for(int i = 0; i < res.size(); ++i)
+    {
+        if(verify(res[i], limit))
+        {
+            if(best.empty() || combined_stocks(res[i]) > combined_stocks(best))
+            {
+                best = res[i];
+            }
+        }
+    }
+
+    return best;
 }
 
 
@@ -46,13 +78,14 @@ int main()
 {   
     std::ifstream ipFile("input.txt");
     std::ofstream out("output.txt");
-    int arrSize, cost;
+    int arrSize, cost, index;
     std::string stcks;
     std::vector<int> companies;
-    std::vector<std::pair<int, int> > stocks;
+    std::vector<std::pair<int, int> > stocks, subset, res;
     
     while(ipFile >> arrSize >> stcks >> cost)
     {
+        // Extract digits from stcks string
         for(int i = 0; i < stcks.size(); ++i)
         {
             if(isdigit(stcks.at(i)))
@@ -68,6 +101,7 @@ int main()
                 }
             }
         }
+        // Put the stock and cost pairs into the stocks vector
         for(int i = 0; i < companies.size(); ++i)
         {
             std::pair<int, int> p1;
@@ -76,11 +110,20 @@ int main()
             stocks.push_back(p1);
             ++i;
         }
-        // Print stock pairs
-        for(int i = 0; i < stocks.size(); ++i)
+    
+        // Gets the combination of companies with highest stock value possible
+        res = stock_maximization(stocks, cost);
+
+        // Generate the correct sample output HERE
+
+        for(int i = 0; i < res.size(); ++i)
         {
-            std::cout << stocks[i].first << " " << stocks[i].second << "\n";
+            std::cout << "[" << res[i].first << ", " << res[i].second << "] ";
         }
+        std::cout << std::endl;
+
+        res.clear();
+        stocks.clear();
         companies.clear();
     }
     return 0;
