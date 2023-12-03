@@ -1,0 +1,10 @@
+96 # 82+14 at index 0, 2, sum of the values at these indices = 42+35 = 77 <= 100
+70 # 50+20 at index 0, 3, sum of the values at these indices = 14+4 = 18 <= 18
+114 # 55+59 at index 0, 2, sum of the values at these indices = 33+26 = 59 <= 60
+147 # 81+66 at index 1, 2, sum of the values at these indices = 58+88 = 146 <= 150
+25 # 25 at index 0, sum of the values at these indices = 13 = 13 <= 20
+171 # 29+54+50+38 at index 0, 5, 6, 7, sum of the values at these indices = 55+36+19+39 = 149 <= 150
+161 # 67+94 at index 2, 8, sum of the values at these indices = 45+55 = 100 <= 100
+172 # 1+17+68+86 at index 0, 2, 4, 6, sum of the values at these indices = 20+1+9+8 = 38 <= 50
+134 # 35+99 at index 6, 9, sum of the values at these indices = 16+31 = 47 <= 75
+562 # 64+88+4+5+58+65+77+12+60+75+54 at index 0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, sum of the values at these indices = 22+28+10+12+51+60+41+77+13+41+85 = 440 <= 500
