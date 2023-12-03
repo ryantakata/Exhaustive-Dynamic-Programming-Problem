@@ -113,8 +113,10 @@ void printOutput(std::vector<std::pair<int, int> > res, std::vector<std::pair<in
     }
     std::cout << "sum of the values at these indices = ";
     output << "sum of the values at these indices = ";
+    int totCost = 0;
     for(int i = 0; i < res.size(); ++i)
     {
+        totCost += res[i].second;
         if(++i != res.size())
         {
             --i;
@@ -124,8 +126,8 @@ void printOutput(std::vector<std::pair<int, int> > res, std::vector<std::pair<in
         else
         {
             --i;
-            std::cout << res[i].second;
-            output << res[i].second;
+            std::cout << res[i].second << " = " << totCost;
+            output << res[i].second << " = " << totCost;
         }
     }
     std::cout << " <= " << cost;
