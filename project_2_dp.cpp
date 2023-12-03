@@ -3,10 +3,12 @@
 #include <vector>
 #include <fstream>
 
-int stock_dp(int limit, std::vector<int> stocks, std::vector<int> cost, int index)
+void stock_dp(int limit, std::vector<int>& stocks, std::vector<int>& cost, int index, std::ofstream& output)
 {
-    std::vector<std::vector<int> > res(limit+1, std::vector<int>(index+1, 0));
+    // 2D array for Dynamic Programming Storage
+    std::vector<std::vector<int> > res(index+1, std::vector<int>(limit+1, 0));
 
+    // DP Solution
     for(int i = 0; i < (index + 1); ++i)
     {
         for(int k = 0; k < (limit + 1); ++k)
@@ -15,24 +17,89 @@ int stock_dp(int limit, std::vector<int> stocks, std::vector<int> cost, int inde
             {
                 res[i][k] = 0;
             }
-            else if(stocks[i-1] <= limit)
+            else if(cost[i-1] <= k)
             {
-                res[i][k] = std::max(cost[i-1] + res[i-1][limit - stocks[i-1]], res[i-1][limit]);
+                res[i][k] = std::max(stocks[i-1] + res[i-1][k - cost[i-1]], res[i-1][k]);               
             }
             else
             {
-                res[i][k] = res[i-1][limit];
+                res[i][k] = res[i-1][k];
             }
         }
     }
-    return res[index][limit];
 
+    // Printing output
+    int total = res[index][limit];
+    std::cout << total << " # ";
+    output << total << " # ";
+
+    // Back track to find the companies that were included
+    std::vector<int> stck, stckVal, indc;
+    int l = limit;
+    for(int i = index; i > 0 && total > 0; --i)
+    {
+        if(total != res[i-1][limit])
+        {
+            indc.push_back(i-1);                // Stores the indices of companies in a vector
+            stck.push_back(stocks[i-1]);        // Stores the stocks associated with companies in a vector
+            stckVal.push_back(cost[i-1]);       // Stores the value associated with companies in a vector
+            total = total - stocks[i-1];
+            limit = limit - cost[i-1];
+        }
+    }
+
+    // Prints the stocks associated with companies
+    for(int i = stck.size()-1; i >= 0; --i)
+    {
+        if(--i < 0)
+        {
+            ++i;
+            std::cout << stck[i];
+            output << stck[i];
+        }
+        else
+        {
+            ++i;
+            std::cout << stck[i] << "+";
+            output << stck[i] << "+";
+        }
+    }
+    std::cout << " at index ";
+    output << " at index ";
+    // Prints the indices of companies
+    for(int i = indc.size() - 1; i >= 0; --i)
+    {
+        std::cout << indc[i] << ", ";
+        output << indc[i] << ", ";
+    }
+    std::cout << "sum of the values at these indices = ";
+    output << "sum of the values at these indices = ";
+    // Prints the values associated with companies
+    for(int i = stckVal.size()-1; i >= 0; --i)
+    {
+        if(--i < 0)
+        {
+            ++i;
+            std::cout << stckVal[i];
+            output << stckVal[i];
+        }
+        else
+        {
+            ++i;
+            std::cout << stckVal[i] << "+";
+            output << stckVal[i] << "+";
+        }
+    }
+    std::cout << " <= " << l;
+    output << " <= " << l;
+    std::cout << std::endl;
+    output << std::endl;
 }
 
 int main()
 {   
     std::ifstream ipFile("input.txt");
-    //std::ofstream out("output.txt");
+    std::ofstream out("output.txt");
     int arrSize, cost;
     std::string stcks;
     std::vector<int> companies, stocks, value;
@@ -65,9 +132,8 @@ int main()
             ++i;
         }
         
-        int fin = stock_dp(cost, stocks, value, stocks.size());
-        std::cout << fin << " ";
-
+        stock_dp(cost, stocks, value, arrSize, out);
+        
         stocks.clear();
         value.clear();
         companies.clear();
