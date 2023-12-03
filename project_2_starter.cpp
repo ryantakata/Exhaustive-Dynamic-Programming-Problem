@@ -147,13 +147,19 @@ int main()
     {
         // Extract digits from stcks string
         for(int i = 0; i < stcks.size(); ++i)
-        {
+        { 
+            int substrTrack = 0, strTrack = i;
             if(isdigit(stcks.at(i)))
             {
                 if(isdigit(stcks.at(i+1)))
                 {
-                    companies.push_back(stoi(stcks.substr(i, i+1)));
-                    ++i;
+                    while(isdigit(stcks.at(strTrack)))
+                    {
+                        ++substrTrack;
+                        ++strTrack;
+                    }
+                    companies.push_back(stoi(stcks.substr(i, i+substrTrack)));
+                    i += substrTrack;
                 }
                 else
                 {

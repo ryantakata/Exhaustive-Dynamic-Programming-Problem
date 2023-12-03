@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <sstream>
 
 void stock_dp(int limit, std::vector<int>& stocks, std::vector<int>& cost, int index, std::ofstream& output)
 {
@@ -75,13 +76,15 @@ void stock_dp(int limit, std::vector<int>& stocks, std::vector<int>& cost, int i
     std::cout << "sum of the values at these indices = ";
     output << "sum of the values at these indices = ";
     // Prints the values associated with companies
+    int totalCost = 0;
     for(int i = stckVal.size()-1; i >= 0; --i)
     {
+        totalCost += stckVal[i];
         if(--i < 0)
         {
             ++i;
-            std::cout << stckVal[i];
-            output << stckVal[i];
+            std::cout << stckVal[i] << " = " << totalCost;
+            output << stckVal[i] << " = " << totalCost;
         }
         else
         {
@@ -100,7 +103,7 @@ int main()
 {   
     std::ifstream ipFile("input.txt");
     std::ofstream out("output.txt");
-    int arrSize, cost;
+    int arrSize, cost, nums;
     std::string stcks;
     std::vector<int> companies, stocks, value;
 
@@ -108,21 +111,27 @@ int main()
     {
         // Extract digits from stcks string
         for(int i = 0; i < stcks.size(); ++i)
-        {
+        { 
+            int substrTrack = 0, strTrack = i;
             if(isdigit(stcks.at(i)))
             {
                 if(isdigit(stcks.at(i+1)))
                 {
-                    companies.push_back(stoi(stcks.substr(i, i+1)));
-                    ++i;
+                    while(isdigit(stcks.at(strTrack)))
+                    {
+                        ++substrTrack;
+                        ++strTrack;
+                    }
+                    companies.push_back(stoi(stcks.substr(i, i+substrTrack)));
+                    i += substrTrack;
                 }
                 else
                 {
                     companies.push_back(stcks[i] - '0');
-                }
+                }   
             }
         }
-        
+
         // Put the stock and cost pairs into the stocks vector
         for(int i = 0; i < companies.size(); ++i)
         {
@@ -131,9 +140,9 @@ int main()
             value.push_back(companies[i+1]);
             ++i;
         }
-        
+
         stock_dp(cost, stocks, value, arrSize, out);
-        
+
         stocks.clear();
         value.clear();
         companies.clear();
