@@ -111,8 +111,8 @@ void printOutput(std::vector<std::pair<int, int> > res, std::vector<std::pair<in
             }
         }
     }
-    std::cout << "sum of the values at these indicies = ";
-    output << "sum of the values at these indicies = ";
+    std::cout << "sum of the values at these indices = ";
+    output << "sum of the values at these indices = ";
     for(int i = 0; i < res.size(); ++i)
     {
         if(++i != res.size())
